@@ -1,0 +1,24 @@
+---
+import Layout from '../components/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Skills from '../components/Skills.astro';
+import Experience from '../components/Experience.astro';
+import Projects from '../components/Projects.astro';
+import Footer from '../components/Footer.astro';
+
+import profile from '../data/profile';
+---
+
+<Layout title={`${profile.name} | ${profile.title}`} description={profile.site.description}>
+  <Navbar />
+  <main>
+    <Hero />
+    <About />
+    <Skills />
+    <Experience />
+    <Projects />
+  </main>
+  <Footer />
+</Layout>

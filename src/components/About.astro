@@ -1,0 +1,39 @@
+---
+import profile from '../data/profile';
+---
+
+<section id="sobre-mi" class="section">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="section-title">Sobre Mí</h2>
+    
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="space-y-4">
+        {profile.about.map((paragraph) => (
+          <p class="text-text-muted dark:text-gray-400 leading-relaxed">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+      
+      <!-- Estadísticas o datos rápidos (personalizable) -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card text-center">
+          <div class="text-3xl font-bold text-primary mb-2">3+</div>
+          <div class="text-sm text-text-muted">Años de Experiencia</div>
+        </div>
+        <div class="card text-center">
+          <div class="text-3xl font-bold text-primary mb-2">20+</div>
+          <div class="text-sm text-text-muted">Proyectos Completados</div>
+        </div>
+        <div class="card text-center">
+          <div class="text-3xl font-bold text-primary mb-2">10+</div>
+          <div class="text-sm text-text-muted">Clientes Satisfechos</div>
+        </div>
+        <div class="card text-center">
+          <div class="text-3xl font-bold text-primary mb-2">∞</div>
+          <div class="text-sm text-text-muted">Ganas de Aprender</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

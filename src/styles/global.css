@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   🎨 ESTILOS PERSONALIZABLES - TEMA MINIMALISTA
+   ============================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-text antialiased;
+  }
+
+  .dark body {
+    @apply bg-surface-dark text-text-dark;
+  }
+
+  /* Tipografía mejorada */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+
+  /* Transiciones suaves para modo oscuro */
+  * {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  /* Botón primario */
+  .btn-primary {
+    @apply inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg
+           hover:bg-primary-dark transition-colors duration-200 font-medium;
+  }
+
+  /* Botón secundario */
+  .btn-secondary {
+    @apply inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg
+           hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium;
+  }
+
+  /* Tarjeta */
+  .card {
+    @apply bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 
+           dark:border-slate-700 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  /* Enlace de navegación */
+  .nav-link {
+    @apply text-text-muted hover:text-text dark:text-gray-400 dark:hover:text-text-dark
+           transition-colors duration-200 font-medium;
+  }
+
+  /* Sección con espaciado consistente */
+  .section {
+    @apply py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto;
+  }
+
+  /* Título de sección */
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-8 text-center md:text-left;
+  }
+}
+
+/* Marquee / Carrusel infinito */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-slate-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-slate-500;
+}

@@ -3,31 +3,57 @@ import profile from '../data/profile';
 ---
 
 <section id="experiencia" class="section">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="section-title">Experiencia</h2>
-    
-    <div class="relative border-l-2 border-gray-200 dark:border-slate-700 ml-4 space-y-8">
-      {profile.experience.map((exp) => (
-        <div class="relative pl-8">
-          <!-- Punto de la línea de tiempo -->
-          <div class="absolute -left-2 top-0 w-4 h-4 bg-primary rounded-full border-4 border-white dark:border-slate-900"></div>
-          
-          <div class="card">
-            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
-              <div>
-                <h3 class="text-xl font-bold">{exp.position}</h3>
-                <p class="text-primary font-medium">{exp.company}</p>
-              </div>
-              <span class="text-sm text-text-muted bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-                {exp.period}
-              </span>
-            </div>
-            <p class="text-text-muted dark:text-gray-400">
-              {exp.description}
-            </p>
+  <div class="container">
+    <h2 class="section-head reveal">Experiencia</h2>
+
+    <div class="exp-list" id="experience-list" data-list data-page-size="3">
+      {profile.experience.map((job, index) => (
+        <article class="exp-grid reveal" data-item style={`--d:${index * 80}ms`}>
+          <p class="exp-period">{job.period}</p>
+
+          <div>
+            <h3 class="exp-position">{job.position}</h3>
+            <p class="exp-company">{job.company}</p>
+            <p class="exp-desc">{job.description}</p>
           </div>
-        </div>
+        </article>
       ))}
     </div>
+
+    <button
+      class="more-btn"
+      type="button"
+      data-more
+      aria-controls="experience-list"
+      aria-expanded="false"
+      data-more-label="Ver más experiencia"
+      data-less-label="Ver menos"
+      hidden
+    >
+      <span data-more-text>Ver más experiencia</span>
+      <svg
+        class="chev"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
   </div>
 </section>
+
+<div class="band" aria-hidden="true">
+  <img
+    src="/images/atmosphere/city.jpg"
+    alt=""
+    width="2400"
+    height="1350"
+    loading="lazy"
+    decoding="async"
+  />
+</div>

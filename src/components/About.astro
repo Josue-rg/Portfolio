@@ -1,38 +1,50 @@
 ---
 import profile from '../data/profile';
+
+const stats = [
+  { value: '3+', label: 'Años de experiencia' },
+  { value: '20+', label: 'Proyectos completados' },
+  { value: '10+', label: 'Clientes satisfechos' },
+  { value: '∞', label: 'Ganas de aprender' },
+];
+
+const [lead, ...rest] = profile.about;
 ---
 
 <section id="sobre-mi" class="section">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="section-title">Sobre Mí</h2>
-    
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="space-y-4">
-        {profile.about.map((paragraph) => (
-          <p class="text-text-muted dark:text-gray-400 leading-relaxed">
+  <div class="container">
+    <h2 class="sr-only">Sobre mí</h2>
+
+    <div class="about-grid">
+      <div class="about-side reveal">
+        <ul class="stats">
+          {stats.map((stat) => (
+            <li class="stat">
+              <span class="stat-num">{stat.value}</span>
+              <span class="stat-label">{stat.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <figure class="about-photo">
+          <img
+            src="/images/atmosphere/stats.jpg"
+            alt=""
+            width="900"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+
+      <div class="about-main">
+        <p class="about-lead reveal">{lead}</p>
+        {rest.map((paragraph, index) => (
+          <p class="about-text reveal" style={`--d:${(index + 1) * 90}ms`}>
             {paragraph}
           </p>
         ))}
-      </div>
-      
-      <!-- Estadísticas o datos rápidos (personalizable) -->
-      <div class="grid grid-cols-2 gap-4">
-        <div class="card text-center">
-          <div class="text-3xl font-bold text-primary mb-2">3+</div>
-          <div class="text-sm text-text-muted">Años de Experiencia</div>
-        </div>
-        <div class="card text-center">
-          <div class="text-3xl font-bold text-primary mb-2">20+</div>
-          <div class="text-sm text-text-muted">Proyectos Completados</div>
-        </div>
-        <div class="card text-center">
-          <div class="text-3xl font-bold text-primary mb-2">10+</div>
-          <div class="text-sm text-text-muted">Clientes Satisfechos</div>
-        </div>
-        <div class="card text-center">
-          <div class="text-3xl font-bold text-primary mb-2">∞</div>
-          <div class="text-sm text-text-muted">Ganas de Aprender</div>
-        </div>
       </div>
     </div>
   </div>

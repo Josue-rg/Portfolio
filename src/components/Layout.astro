@@ -7,43 +7,200 @@ interface Props {
   description?: string;
 }
 
-const { title = profile.site.description, description = profile.site.description } = Astro.props;
+const {
+  title = `${profile.name} | ${profile.title}`,
+  description = profile.site.description,
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="author" content={profile.site.author} />
     <meta name="keywords" content={profile.site.keywords} />
-    
+    <meta name="theme-color" content="#0a0a0a" />
+
     <!-- Open Graph / Redes sociales -->
     <meta property="og:title" content={profile.name} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    
+    <meta property="og:image" content="/images/atmosphere/band.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <title>{title}</title>
-    
-    <!-- Favicon básico (reemplázalo luego) -->
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
-    <!-- Fuente Inter de Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Script para modo oscuro (evita parpadeo) -->
-    <script>
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+
+    <!-- Boska (display) + Satoshi (texto) -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=boska@400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tema: oscuro por defecto, claro opcional -->
+    <script is:inline>
+      (function () {
+        document.documentElement.classList.add('js');
+        try {
+          if (localStorage.theme === 'light') {
+            document.documentElement.classList.add('light');
+          }
+        } catch (e) {}
+      })();
     </script>
   </head>
   <body>
+    <a href="#contenido" class="skip-link">Saltar al contenido</a>
     <slot />
+
+    <script>
+      const root = document.documentElement;
+
+      /* Tema claro / oscuro */
+      const themeBtn = document.getElementById('theme-toggle');
+      function syncTheme() {
+        const light = root.classList.contains('light');
+        if (themeBtn) themeBtn.textContent = light ? 'Oscuro' : 'Claro';
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', light ? '#f4f1ea' : '#0a0a0a');
+      }
+      themeBtn?.addEventListener('click', () => {
+        root.classList.toggle('light');
+        try {
+          localStorage.theme = root.classList.contains('light') ? 'light' : 'dark';
+        } catch (e) {}
+        syncTheme();
+      });
+      syncTheme();
+
+      /* Menú móvil */
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      menuBtn?.addEventListener('click', () => {
+        const willOpen = mobileMenu?.hasAttribute('hidden');
+        if (willOpen) mobileMenu?.removeAttribute('hidden');
+        else mobileMenu?.setAttribute('hidden', '');
+        menuBtn.setAttribute('aria-expanded', String(Boolean(willOpen)));
+      });
+      mobileMenu?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          mobileMenu.setAttribute('hidden', '');
+          menuBtn?.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      /* Aparición al hacer scroll */
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reveals = document.querySelectorAll('.reveal');
+      if (reduceMotion) {
+        reveals.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+        );
+        reveals.forEach((el) => io.observe(el));
+      }
+
+      /* Sección activa en la navegación */
+      const navLinks = Array.from(document.querySelectorAll('[data-nav]'));
+      const sections = navLinks
+        .map((link) => document.querySelector(link.getAttribute('href') || ''))
+        .filter(Boolean);
+      if (sections.length > 0) {
+        const spy = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              navLinks.forEach((link) => {
+                link.classList.toggle(
+                  'is-current',
+                  link.getAttribute('href') === `#${entry.target.id}`
+                );
+              });
+            });
+          },
+          { rootMargin: '-45% 0px -50% 0px' }
+        );
+        sections.forEach((section) => spy.observe(section));
+      }
+
+      /* Vista previa de proyectos */
+      const workItems = Array.from(document.querySelectorAll('[data-work]'));
+      const workPanels = Array.from(document.querySelectorAll('[data-panel]'));
+      function activateWork(index) {
+        workItems.forEach((el) =>
+          el.classList.toggle('is-active', el.dataset.work === String(index))
+        );
+        workPanels.forEach((el) =>
+          el.classList.toggle('is-active', el.dataset.panel === String(index))
+        );
+      }
+      workItems.forEach((el) => {
+        const index = el.dataset.work;
+        el.addEventListener('mouseenter', () => activateWork(index));
+        el.addEventListener('focus', () => activateWork(index));
+        el.addEventListener('click', () => activateWork(index));
+      });
+      if (workItems.length > 0) activateWork(0);
+
+      /* Divulgación progresiva: mostrar 3, "ver más" +3, "ver menos" para plegar */
+      document.querySelectorAll('[data-list]').forEach((list) => {
+        const items = Array.from(list.querySelectorAll('[data-item]'));
+        const size = Math.max(1, parseInt(list.dataset.pageSize || '3', 10));
+        if (items.length <= size || !list.id) return;
+
+        const button = document.querySelector(`[data-more][aria-controls="${list.id}"]`);
+        if (!button) return;
+
+        const label = button.querySelector('[data-more-text]');
+        const moreLabel = button.dataset.moreLabel || 'Ver más';
+        const lessLabel = button.dataset.lessLabel || 'Ver menos';
+        let shown = size;
+
+        const apply = () => {
+          items.forEach((item, index) => {
+            const visible = index < shown;
+            const wasHidden = item.hidden;
+            item.hidden = !visible;
+            if (visible && wasHidden && !item.classList.contains('is-visible')) {
+              requestAnimationFrame(() => item.classList.add('is-visible'));
+            }
+          });
+          const expanded = shown > size;
+          button.setAttribute('aria-expanded', String(expanded));
+          button.classList.toggle('is-expanded', shown >= items.length);
+          if (label) label.textContent = shown >= items.length ? lessLabel : moreLabel;
+        };
+
+        button.hidden = false;
+        button.addEventListener('click', () => {
+          const collapsing = shown >= items.length;
+          shown = collapsing ? size : Math.min(items.length, shown + size);
+          apply();
+          if (collapsing && list.id === 'projects-list' && workItems.length > 0) {
+            activateWork(0);
+          }
+        });
+
+        apply();
+      });
+    </script>
   </body>
 </html>

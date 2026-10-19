@@ -158,7 +158,11 @@ const {
         el.addEventListener('focus', () => activateWork(index));
         el.addEventListener('click', () => activateWork(index));
       });
-      if (workItems.length > 0) activateWork(0);
+
+      /* Al cargar mostramos el primer proyecto que tenga fotos (si hay) */
+      const workDefault = workPanels.findIndex((panel) => panel.querySelector('[data-photos]'));
+      const defaultWork = workDefault >= 0 ? workDefault : 0;
+      if (workItems.length > 0) activateWork(defaultWork);
 
       /* Divulgación progresiva: mostrar 3, "ver más" +3, "ver menos" para plegar */
       document.querySelectorAll('[data-list]').forEach((list) => {
@@ -195,11 +199,117 @@ const {
           shown = collapsing ? size : Math.min(items.length, shown + size);
           apply();
           if (collapsing && list.id === 'projects-list' && workItems.length > 0) {
-            activateWork(0);
+            activateWork(defaultWork);
           }
         });
 
         apply();
+      });
+
+      /* Fotos de proyecto: las miniaturas cambian la imagen grande; clic abre el visor */
+      const lightbox = document.querySelector('[data-lightbox]');
+      const lbImg = lightbox?.querySelector('[data-lb-img]');
+      const lbBlur = lightbox?.querySelector('[data-lb-blur]');
+      const lbCaption = lightbox?.querySelector('[data-lb-caption]');
+      let lbList = [];
+      let lbIndex = 0;
+
+      const renderLb = () => {
+        const item = lbList[lbIndex];
+        if (!item) return;
+        if (lbImg) {
+          lbImg.src = item.src;
+          lbImg.alt = item.alt || '';
+        }
+        if (lbBlur) lbBlur.src = item.src;
+        if (lbCaption) {
+          lbCaption.textContent = lbList.length > 1 ? `${lbIndex + 1} / ${lbList.length}` : '';
+        }
+      };
+
+      const showLb = (index) => {
+        const length = lbList.length;
+        if (!length) return;
+        lbIndex = ((index % length) + length) % length;
+        renderLb();
+      };
+
+      const openLightbox = (list, index) => {
+        if (!lightbox || !list.length) return;
+        lbList = list;
+        lbIndex = index;
+        renderLb();
+        if (typeof lightbox.showModal === 'function') lightbox.showModal();
+      };
+
+      /* Mosaico de 3: cada pieza abre el visor en su foto */
+      document.querySelectorAll('[data-photos]').forEach((media) => {
+        let photos = [];
+        try {
+          photos = JSON.parse(media.dataset.photos || '[]');
+        } catch (error) {
+          photos = [];
+        }
+        if (!photos.length) return;
+
+        const first = media.querySelector('.work-tile img');
+
+        /* Orientación: las capturas verticales se ven completas (contain) */
+        const setOrientation = () => {
+          if (!first || !first.naturalWidth) return;
+          media.setAttribute(
+            'data-orient',
+            first.naturalHeight > first.naturalWidth ? 'portrait' : 'landscape'
+          );
+        };
+        if (first) {
+          first.addEventListener('load', setOrientation);
+          if (typeof first.decode === 'function') {
+            first.decode().then(setOrientation).catch(() => {});
+          }
+          if (first.complete) setOrientation();
+        }
+
+        media.querySelectorAll('[data-tile]').forEach((tile) => {
+          const index = Number(tile.dataset.tile);
+          tile.addEventListener('click', () => openLightbox(photos, index));
+        });
+      });
+
+      /* Al llegar a Proyectos, precargamos los mosaicos */
+      const projectsSection = document.getElementById('proyectos');
+      if (projectsSection && 'IntersectionObserver' in window) {
+        const preload = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            document.querySelectorAll('.work-preview .work-tile img').forEach((img) => {
+              img.loading = 'eager';
+              if (typeof img.decode === 'function') img.decode().catch(() => {});
+            });
+            preload.disconnect();
+          },
+          { rootMargin: '300px 0px' }
+        );
+        preload.observe(projectsSection);
+      }
+
+      lightbox?.querySelector('[data-lb-prev]')?.addEventListener('click', () => showLb(lbIndex - 1));
+      lightbox?.querySelector('[data-lb-next]')?.addEventListener('click', () => showLb(lbIndex + 1));
+      lightbox?.querySelector('[data-lb-close]')?.addEventListener('click', () => lightbox.close());
+
+      lightbox?.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          showLb(lbIndex + 1);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          showLb(lbIndex - 1);
+        }
+      });
+
+      /* Clic fuera de la imagen (en el fondo del visor) cierra */
+      lightbox?.addEventListener('click', (event) => {
+        if (event.target === lightbox) lightbox.close();
       });
     </script>
   </body>

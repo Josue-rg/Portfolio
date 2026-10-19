@@ -1,7 +1,11 @@
 ---
 import profile from '../data/profile';
+import ProjectMedia from './ProjectMedia.astro';
 
 const projects = profile.projects;
+
+type Photo = { src: string; alt: string };
+type PhotoInput = string | { src: string; alt?: string };
 
 function cleanTech(project: (typeof projects)[number]) {
   return project.technologies.map((tech) => tech.trim()).filter(Boolean);
@@ -14,8 +18,33 @@ function linksFor(project: (typeof projects)[number]) {
   };
 }
 
+function mapPhotos(title: string, raw: PhotoInput[]): Photo[] {
+  return raw.map((item, index) =>
+    typeof item === 'string'
+      ? { src: item, alt: `${title}: captura ${index + 1}` }
+      : { src: item.src, alt: item.alt || `${title}: captura ${index + 1}` }
+  );
+}
+
+/*
+ * Orden por pantalla:
+ *  - 'web'    → `images` (escritorio)
+ *  - 'mobile' → `imagesMobile` si existe; si no, `images`
+ */
+function photosOf(project: (typeof projects)[number], view: 'web' | 'mobile' = 'web'): Photo[] {
+  const data = project as { images?: PhotoInput[]; imagesMobile?: PhotoInput[] };
+  const raw = view === 'mobile' && data.imagesMobile?.length ? data.imagesMobile : data.images;
+  return mapPhotos(project.title, raw ?? []);
+}
+
 const entryLink = (project: (typeof projects)[number]) =>
   project.liveUrl || project.githubUrl || '#proyectos';
+
+const allPhotos = projects.flatMap((project) => [
+  ...photosOf(project, 'web'),
+  ...photosOf(project, 'mobile'),
+]);
+const firstPhoto = allPhotos[0];
 ---
 
 <section id="proyectos" class="section section--field">
@@ -28,6 +57,7 @@ const entryLink = (project: (typeof projects)[number]) =>
           {projects.map((project, index) => {
             const tech = cleanTech(project);
             const links = linksFor(project);
+            const photos = photosOf(project, 'mobile');
 
             return (
               <li class="work-entry reveal" data-item style={`--d:${index * 40}ms`}>
@@ -42,6 +72,8 @@ const entryLink = (project: (typeof projects)[number]) =>
                 </a>
 
                 <div class="work-inline">
+                  <ProjectMedia photos={photos} title={project.title} />
+
                   <div class="work-links">
                     {links.demo && (
                       <a href={links.demo} target="_blank" rel="noopener noreferrer">Ver demo</a>
@@ -91,18 +123,26 @@ const entryLink = (project: (typeof projects)[number]) =>
           {projects.map((project, index) => {
             const tech = cleanTech(project);
             const links = linksFor(project);
+            const photos = photosOf(project);
 
             return (
               <div class="work-panel" data-panel={index}>
-                <span class="work-mono" aria-hidden="true">
-                  {project.title.trim().charAt(0)}
-                </span>
+                {photos.length > 0 ? (
+                  <ProjectMedia photos={photos} title={project.title} />
+                ) : (
+                  <span class="work-mono" aria-hidden="true">
+                    {project.title.trim().charAt(0)}
+                  </span>
+                )}
+
                 <p class="work-desc">{project.description}</p>
+
                 {tech.length > 0 && (
                   <ul class="work-tech">
                     {tech.map((item) => <li>{item}</li>)}
                   </ul>
                 )}
+
                 <div class="work-links">
                   {links.demo && (
                     <a href={links.demo} target="_blank" rel="noopener noreferrer">Ver demo</a>
@@ -119,3 +159,31 @@ const entryLink = (project: (typeof projects)[number]) =>
     </div>
   </div>
 </section>
+
+{firstPhoto && (
+  <dialog class="lightbox" data-lightbox aria-label="Imagen ampliada">
+    <img class="lightbox-blur" data-lb-blur src={firstPhoto.src} alt="" aria-hidden="true" decoding="async" />
+
+    <button class="lightbox-close" type="button" data-lb-close aria-label="Cerrar">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <button class="lightbox-nav lightbox-prev" type="button" data-lb-prev aria-label="Imagen anterior">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <img class="lightbox-img" data-lb-img src={firstPhoto.src} alt={firstPhoto.alt} decoding="async" />
+
+    <button class="lightbox-nav lightbox-next" type="button" data-lb-next aria-label="Imagen siguiente">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <p class="lightbox-caption" data-lb-caption></p>
+  </dialog>
+)}

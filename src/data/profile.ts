@@ -36,18 +36,39 @@ export const profile = {
   ],
 
   // Proyectos destacados
+  // Para añadir fotos: `images: ['/images/resju/ResJu1.webp', ...]` con rutas dentro de public/.
+  // La primera se ve en grande; hasta 4 aparecen como miniaturas (las demás, en la vista completa).
+  // También puedes usar { src: '...', alt: '...' } para describir una imagen.
+  //
+  // Orden por pantalla: `images` se usa en web/escritorio. Si defines `imagesMobile`,
+  // ese arreglo (otro orden o incluso otras fotos) se usa en pantallas pequeñas.
+  //   images: ['/web-1.webp', '/web-2.webp'],
+  //   imagesMobile: ['/movil-1.webp', '/movil-2.webp', '/web-2.webp'],
   projects: [
     {
       title: 'Polin',
       description: 'Gestor de Tiempos para Juegos Mecánicos.',
-      image: '/images/project1.jpg',
+      // Capturas verticales (app móvil): se muestran completas, sin recortar.
+      images: [
+        '/images/polin/Polin1.webp',
+        '/images/polin/Polin2.webp',
+        '/images/polin/Polin3.webp',
+        '/images/polin/Polin4.webp',
+        '/images/polin/Polin5.webp',
+      ],
       technologies: ['Flutter', 'Dart', 'SQLite', 'Desarrollo Offline-First',],
+      liveUrl:"https://appetize.io/app/b_5mxc3spjjcz2vmd3pphlp4ii24",
       githubUrl: 'https://github.com/Josue-rg/Polin',
     },
     {
       title: 'ResJu',
       description: 'Plataforma Web de Resolución de Juegos de Destreza.',
-      image: '/images/project2.jpg',
+      images: [
+        '/images/resju/ResJu1.webp',
+        '/images/resju/ResJu2.webp',
+        '/images/resju/ResJu3.webp',
+        '/images/resju/ResJu4.webp',
+      ],
       technologies: ['React + Vite', 'FastAPI', 'Axios', 'PostgreSQL', 'JWT', 'OAuth'],
       liveUrl: 'https://res-ju.vercel.app/',
       githubUrl: 'https://github.com/Josue-rg/ResJu',
@@ -55,7 +76,14 @@ export const profile = {
     {
       title: 'CrimenNet',
       description: 'Sistema de Investigaciones Criminales.',
-      image: '/images/project2.jpg',
+      images: [
+        '/images/crimennet/CrimenNet1.webp',
+        '/images/crimennet/CrimenNet2.webp',
+        '/images/crimennet/CrimenNet3.webp',
+        '/images/crimennet/CrimenNet4.webp',
+        '/images/crimennet/CrimenNet5.webp',
+        '/images/crimennet/CrimenNet6.webp',
+      ],
       technologies: ['React + Vite', 'FastAPI', 'Axios', 'PostgreSQL', 'JWT', ],
       liveUrl: 'https://crimennet.vercel.app/',
       githubUrl: 'https://github.com/Josue-rg/CrimenNet',

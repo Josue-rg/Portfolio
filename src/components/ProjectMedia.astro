@@ -1,0 +1,41 @@
+---
+interface Props {
+  photos: Array<{ src: string; alt: string }>;
+  title: string;
+}
+
+const { photos, title } = Astro.props;
+const preview = photos.slice(0, 3);
+const extra = Math.max(0, photos.length - 3);
+---
+
+{preview.length > 0 && (
+  <div class="work-media" data-photos={JSON.stringify(photos)}>
+    <div class="work-mosaic">
+      {preview.map((photo, index) => (
+        <button
+          class="work-tile"
+          type="button"
+          data-tile={index}
+          aria-label={
+            index === 2 && extra > 0
+              ? `Ver las ${photos.length} imágenes de ${title}`
+              : `Ampliar imagen ${index + 1} de ${title}`
+          }
+        >
+          <img
+            src={photo.src}
+            alt=""
+            width="1600"
+            height="1200"
+            loading="lazy"
+            decoding="async"
+          />
+          {index === 2 && extra > 0 && (
+            <span class="work-tile-more" aria-hidden="true">+{extra}</span>
+          )}
+        </button>
+      ))}
+    </div>
+  </div>
+)}

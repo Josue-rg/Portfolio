@@ -45,6 +45,32 @@ export const profile = {
   //   images: ['/web-1.webp', '/web-2.webp'],
   //   imagesMobile: ['/movil-1.webp', '/movil-2.webp', '/web-2.webp'],
   projects: [
+      {
+      title: 'EduHub',
+      description: 'Plataforma de cursos online',
+      images: [
+        '/images/EduHub/Eduhub1.png',
+        '/images/EduHub/Eduhub2.png',
+        '/images/EduHub/Eduhub3.png',
+        '/images/EduHub/Eduhub4.png',
+      ],
+      technologies: ['React', 'REST API', 'PostgreSQL', 'Supabase', 'Node.js + Express ', 'TypeScript',],
+      liveUrl: 'https://edu-hub-steel-five.vercel.app/',
+      githubUrl: 'https://github.com/Josue-rg/EduHub',
+    },
+    {
+      title: 'ResJu',
+      description: 'Plataforma Web de Resolución de Juegos de Destreza.',
+      images: [
+        '/images/resju/ResJu1.webp',
+        '/images/resju/ResJu2.webp',
+        '/images/resju/ResJu3.webp',
+        '/images/resju/ResJu4.webp',
+      ],
+      technologies: ['React + Vite', 'FastAPI', 'Axios', 'PostgreSQL', 'JWT', 'OAuth'],
+      liveUrl: 'https://res-ju.vercel.app/',
+      githubUrl: 'https://github.com/Josue-rg/ResJu',
+    },
     {
       title: 'Polin',
       description: 'Gestor de Tiempos para Juegos Mecánicos.',
@@ -59,19 +85,6 @@ export const profile = {
       technologies: ['Flutter', 'Dart', 'SQLite', 'Desarrollo Offline-First',],
       liveUrl:"https://appetize.io/app/b_5mxc3spjjcz2vmd3pphlp4ii24",
       githubUrl: 'https://github.com/Josue-rg/Polin',
-    },
-    {
-      title: 'ResJu',
-      description: 'Plataforma Web de Resolución de Juegos de Destreza.',
-      images: [
-        '/images/resju/ResJu1.webp',
-        '/images/resju/ResJu2.webp',
-        '/images/resju/ResJu3.webp',
-        '/images/resju/ResJu4.webp',
-      ],
-      technologies: ['React + Vite', 'FastAPI', 'Axios', 'PostgreSQL', 'JWT', 'OAuth'],
-      liveUrl: 'https://res-ju.vercel.app/',
-      githubUrl: 'https://github.com/Josue-rg/ResJu',
     },
     {
       title: 'CrimenNet',
@@ -89,28 +102,12 @@ export const profile = {
       githubUrl: 'https://github.com/Josue-rg/CrimenNet',
     },
     {
-      title: 'Shekael',
-      description: 'Red Social para tu Comunidad Local.',
-      image: '/images/project2.jpg',
-      technologies: ['React + Vite', 'Stellar testnet', 'Google OAuth + JWT', 'Supabase', 'Node.js + Express', ],
-      liveUrl: 'https://shekael.com/',
-      githubUrl: 'https://github.com/kuisser116/Manna',
-    },
-    {
       title: 'Wordle Full',
       description: 'Aplicación web y movil de Wordle juego',
       image: '/images/project2.jpg',
       technologies: ['React + Vite', 'NestJS', 'TypeScript ', 'React Native', 'Tailwind CSS', ],
       liveUrl: '',
       githubUrl: 'https://github.com/Josue-rg/Full-Stack-Challenge',
-    },
-    {
-      title: 'EduHub',
-      description: 'Plataforma de cursos online',
-      image: '/images/project2.jpg',
-      technologies: [''],
-      liveUrl: '',
-      githubUrl: 'https://github.com/Josue-rg/EduHub',
     },
     {
       title: 'FakeSteam',
